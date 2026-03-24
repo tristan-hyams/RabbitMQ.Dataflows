@@ -35,10 +35,11 @@ jobs:
       run: dotnet build src/Tests/UnitTests/UnitTests.csproj --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test src/Tests/UnitTests/UnitTests.csproj --configuration Release --no-build --verbosity normal
-           /p:CollectCoverage=true
-           /p:CoverletOutput='../../../coverage.cobertura.xml'
-           /p:CoverletOutputFormat=cobertura
+      run: >-
+        dotnet test src/Tests/UnitTests/UnitTests.csproj --configuration Release --no-build --verbosity normal
+        -p:CollectCoverage=true
+        -p:CoverletOutput=../../../coverage.cobertura.xml
+        -p:CoverletOutputFormat=cobertura
 
     - name: Upload Coverage Report
       uses: codacy/codacy-coverage-reporter-action@v1
