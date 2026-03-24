@@ -19,14 +19,23 @@ jobs:
       with:
         dotnet-version: '10.0.x'
 
-    - name: Install dependencies
-      run: dotnet restore RabbitMQ.Dataflows.slnx
+    - name: Restore
+      run: |
+        dotnet restore src/HouseofCat.Utilities/HouseofCat.Utilities.csproj
+        dotnet restore src/HouseofCat.Hashing/HouseofCat.Hashing.csproj
+        dotnet restore src/HouseofCat.Encryption/HouseofCat.Encryption.csproj
+        dotnet restore src/HouseofCat.Compression/HouseofCat.Compression.csproj
+        dotnet restore src/HouseofCat.Serialization/HouseofCat.Serialization.csproj
+        dotnet restore src/HouseofCat.Dataflows/HouseofCat.Dataflows.csproj
+        dotnet restore src/HouseofCat.RabbitMQ/HouseofCat.RabbitMQ.csproj
+        dotnet restore src/HouseofCat.Data/HouseofCat.Data.csproj
+        dotnet restore src/Tests/UnitTests/UnitTests.csproj
 
     - name: Build
-      run: dotnet build RabbitMQ.Dataflows.slnx --configuration Release --no-restore
+      run: dotnet build src/Tests/UnitTests/UnitTests.csproj --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test "./src/Tests/UnitTests/UnitTests.csproj" --configuration Release --no-build --verbosity normal
+      run: dotnet test src/Tests/UnitTests/UnitTests.csproj --configuration Release --no-build --verbosity normal
            /p:CollectCoverage=true
            /p:CoverletOutput='../../../coverage.cobertura.xml'
            /p:CoverletOutputFormat=cobertura

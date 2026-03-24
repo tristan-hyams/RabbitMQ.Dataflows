@@ -4,6 +4,23 @@ on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g. 5.0.0)'
+        required: true
+
+env:
+  VERSION_PROP: /p:Version=${{ github.ref_name }}
+  LIBRARY_PROJECTS: >-
+    src/HouseofCat.Utilities/HouseofCat.Utilities.csproj
+    src/HouseofCat.Hashing/HouseofCat.Hashing.csproj
+    src/HouseofCat.Encryption/HouseofCat.Encryption.csproj
+    src/HouseofCat.Compression/HouseofCat.Compression.csproj
+    src/HouseofCat.Serialization/HouseofCat.Serialization.csproj
+    src/HouseofCat.Dataflows/HouseofCat.Dataflows.csproj
+    src/HouseofCat.RabbitMQ/HouseofCat.RabbitMQ.csproj
+    src/HouseofCat.Data/HouseofCat.Data.csproj
 
 jobs:
   publish:
@@ -13,12 +30,16 @@ jobs:
     steps:
     - uses: actions/checkout@v6
 
-    - name: Extract version from tag
+    - name: Extract version
       id: version
       shell: bash
       run: |
-        TAG="${GITHUB_REF#refs/tags/v}"
-        echo "version=$TAG" >> "$GITHUB_OUTPUT"
+        if [ -n "${{ inputs.version }}" ]; then
+          echo "version=${{ inputs.version }}" >> "$GITHUB_OUTPUT"
+        else
+          TAG="${GITHUB_REF#refs/tags/v}"
+          echo "version=$TAG" >> "$GITHUB_OUTPUT"
+        fi
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
@@ -26,16 +47,32 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Restore
-      run: dotnet restore RabbitMQ.Dataflows.slnx
+      shell: bash
+      run: |
+        for proj in ${{ env.LIBRARY_PROJECTS }}; do
+          dotnet restore "$proj"
+        done
 
     - name: Build
-      run: dotnet build RabbitMQ.Dataflows.slnx --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
+      shell: bash
+      run: |
+        for proj in ${{ env.LIBRARY_PROJECTS }}; do
+          dotnet build "$proj" --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
+        done
 
     - name: Pack
-      run: dotnet pack RabbitMQ.Dataflows.slnx --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.version.outputs.version }}
+      shell: bash
+      run: |
+        for proj in ${{ env.LIBRARY_PROJECTS }}; do
+          dotnet pack "$proj" --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.version.outputs.version }}
+        done
 
     - name: Push to NuGet
-      run: dotnet nuget push "./nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+      shell: bash
+      run: |
+        for pkg in ./nupkgs/*.nupkg; do
+          dotnet nuget push "$pkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+        done
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
