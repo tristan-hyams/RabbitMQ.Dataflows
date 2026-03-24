@@ -20,15 +20,15 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Install dependencies
-      run: dotnet restore RabbitMQ.Dataflows.sln
+      run: dotnet restore RabbitMQ.Dataflows.slnx
 
     - name: Build
-      run: dotnet build RabbitMQ.Dataflows.sln --configuration Release --no-restore
+      run: dotnet build RabbitMQ.Dataflows.slnx --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test "./tests/UnitTests/UnitTests.csproj" --configuration Release --no-build --verbosity normal
+      run: dotnet test "./src/Tests/UnitTests/UnitTests.csproj" --configuration Release --no-build --verbosity normal
            /p:CollectCoverage=true
-           /p:CoverletOutput='../../coverage.cobertura.xml'
+           /p:CoverletOutput='../../../coverage.cobertura.xml'
            /p:CoverletOutputFormat=cobertura
 
     - name: Upload Coverage Report

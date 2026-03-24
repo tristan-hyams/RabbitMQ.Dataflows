@@ -48,9 +48,15 @@ public static class Shared
     public static readonly string EncryptionSalt = "SaltySaltSalt";
     public static readonly int KeySize = 32;
 
-    public static async Task<IRabbitService> SetupRabbitServiceAsync(ILoggerFactory loggerFactory, string configFileNamePath)
+    public static async Task<IRabbitService> SetupRabbitServiceAsync(ILoggerFactory loggerFactory, string configFileNamePath, string connectionString = null)
     {
         var rabbitOptions = await RabbitOptionsExtensions.GetRabbitOptionsFromJsonFileAsync(configFileNamePath);
+
+        // Override URI with Aspire-injected connection string when available.
+        if (!string.IsNullOrWhiteSpace(connectionString))
+        {
+            rabbitOptions.PoolOptions.Uri = new Uri(connectionString);
+        }
         var jsonProvider = new JsonProvider();
 
         var hashProvider = new ArgonHashingProvider();

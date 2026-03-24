@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Sdk Name="Aspire.AppHost.Sdk" Version="9.2.1" />
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsAspireHost>true</IsAspireHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.RabbitMQ" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RabbitMQ.Console.Tests\RabbitMQ.Console.Tests.csproj" />
+    <ProjectReference Include="..\RabbitMQ.ConsumerDataflowService\RabbitMQ.ConsumerDataflowService.csproj" />
+    <ProjectReference Include="..\OpenTelemetry.Console.Tests\OpenTelemetry.Console.Tests.csproj" />
+  </ItemGroup>
+
+</Project>

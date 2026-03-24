@@ -17,13 +17,17 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
     .Build();
 
 builder.Services.AddOpenTelemetryExporter(configuration);
 
 using var app = builder.Build();
 
-var rabbitService = await Shared.SetupRabbitServiceAsync(loggerFactory, "RabbitMQ.ConsumerDataflows.json");
+// Resolve the Aspire-injected connection string (falls back to JSON config default).
+var connectionString = app.Configuration.GetConnectionString("rabbitmq");
+
+var rabbitService = await Shared.SetupRabbitServiceAsync(loggerFactory, "RabbitMQ.ConsumerDataflows.json", connectionString);
 var dataflowService = new ConsumerDataflowService<CustomWorkState>(
     rabbitService,
     "TestConsumer");

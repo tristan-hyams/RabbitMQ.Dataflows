@@ -26,13 +26,13 @@ jobs:
         dotnet-version: '10.0.x'
 
     - name: Restore
-      run: dotnet restore RabbitMQ.Dataflows.sln
+      run: dotnet restore RabbitMQ.Dataflows.slnx
 
     - name: Build
-      run: dotnet build RabbitMQ.Dataflows.sln --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
+      run: dotnet build RabbitMQ.Dataflows.slnx --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
 
     - name: Pack
-      run: dotnet pack RabbitMQ.Dataflows.sln --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.version.outputs.version }}
+      run: dotnet pack RabbitMQ.Dataflows.slnx --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.version.outputs.version }}
 
     - name: Push to NuGet
       run: dotnet nuget push "./nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate

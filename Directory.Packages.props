@@ -46,6 +46,13 @@
     <PackageVersion Include="System.Data.Odbc" Version="10.0.5" />
     <PackageVersion Include="System.Data.OleDb" Version="10.0.5" />
     <PackageVersion Include="System.Data.SQLite" Version="2.0.3" />
+    <!-- Aspire -->
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="9.2.1" />
+    <PackageVersion Include="Aspire.Hosting.RabbitMQ" Version="9.2.1" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.5" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="9.2.1" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="9.5.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.15.0" />
     <!-- Testing -->
     <PackageVersion Include="coverlet.collector" Version="8.0.1" />
     <PackageVersion Include="coverlet.msbuild" Version="8.0.1" />

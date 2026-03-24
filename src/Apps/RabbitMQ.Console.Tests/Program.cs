@@ -1,4 +1,4 @@
-﻿using HouseofCat.Utilities.Extensions;
+using HouseofCat.Utilities.Extensions;
 using HouseofCat.Utilities.Helpers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
@@ -13,11 +13,15 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = new ConfigurationBuilder()
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json")
+    .AddEnvironmentVariables()
     .Build();
 
 builder.Services.AddOpenTelemetryExporter(configuration);
 
 using var app = builder.Build();
+
+// Resolve the Aspire-injected connection string (falls back to JSON config default).
+var connectionString = app.Configuration.GetConnectionString("rabbitmq");
 
 logger.LogInformation("Tests complete! Press CTRL+C to gracefully exit....");
 
@@ -39,7 +43,7 @@ app.Lifetime.ApplicationStarted.Register(
         //await PubSubTests.RunPubSubCheckForDuplicateTestAsync(logger, "./RabbitMQ.PubSubTests.json");
 
         // RabbitService Tests
-        await RabbitServiceTests.RunRabbitServicePingPongTestAsync(loggerFactory, "./RabbitMQ.RabbitServiceTests.json");
+        await RabbitServiceTests.RunRabbitServicePingPongTestAsync(loggerFactory, "./RabbitMQ.RabbitServiceTests.json", connectionString);
         //await RabbitServiceTests.RunRabbitServiceAltPingPongTestAsync(loggerFactory, "./RabbitMQ.RabbitServiceTests.json");
     });
 

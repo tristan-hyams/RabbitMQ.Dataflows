@@ -9,9 +9,9 @@ public static class RabbitServiceTests
 {
     // This test is about testing outages in both the Consumer and Publisher
     // with the shared ConnectionPool all stitched together by the helper RabbitService.
-    public static async Task RunRabbitServicePingPongTestAsync(ILoggerFactory loggerFactory, string configFileNamePath)
+    public static async Task RunRabbitServicePingPongTestAsync(ILoggerFactory loggerFactory, string configFileNamePath, string connectionString = null)
     {
-        var rabbitService = await Shared.SetupRabbitServiceAsync(loggerFactory, configFileNamePath);
+        var rabbitService = await Shared.SetupRabbitServiceAsync(loggerFactory, configFileNamePath, connectionString);
 
         var consumer = rabbitService.GetConsumer(Shared.ConsumerName);
         await consumer.StartConsumerAsync();

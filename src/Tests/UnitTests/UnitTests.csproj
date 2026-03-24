@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" />
+    <PackageReference Include="RabbitMQ.Client.OAuth2" />
+    <PackageReference Include="ReportGenerator" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.Data\HouseofCat.Data.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.RabbitMQ\HouseofCat.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,49 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".codacy.yml" />
+    <File Path=".editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="Test.Build.props" />
+    <File Path="version.props" />
+    <File Path="houseofcat.png" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+    <File Path="AGENTS.md" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/HouseofCat.Utilities/HouseofCat.Utilities.csproj" />
+    <Project Path="src/HouseofCat.Hashing/HouseofCat.Hashing.csproj" />
+    <Project Path="src/HouseofCat.Encryption/HouseofCat.Encryption.csproj" />
+    <Project Path="src/HouseofCat.Compression/HouseofCat.Compression.csproj" />
+    <Project Path="src/HouseofCat.Serialization/HouseofCat.Serialization.csproj" />
+    <Project Path="src/HouseofCat.Dataflows/HouseofCat.Dataflows.csproj" />
+    <Project Path="src/HouseofCat.RabbitMQ/HouseofCat.RabbitMQ.csproj" />
+    <Project Path="src/HouseofCat.Data/HouseofCat.Data.csproj" />
+  </Folder>
+  <Folder Name="/.claude/">
+    <File Path=".claude/CLAUDE.md" />
+    <File Path=".claude/settings.local.json" />
+  </Folder>
+  <Folder Name="/.claude/skills/" />
+  <Folder Name="/.claude/skills/agentify/">
+    <File Path=".claude/skills/agentify/SKILL.md" />
+  </Folder>
+  <Folder Name="/.github/">
+    <File Path=".github/copilot-instructions.md" />
+  </Folder>
+  <Folder Name="/.github/workflows/">
+    <File Path=".github/workflows/build.yml" />
+    <File Path=".github/workflows/publish.yml" />
+  </Folder>
+  <Folder Name="/src/apps/">
+    <Project Path="src/Apps/Aspire.AppHost/Aspire.AppHost.csproj" />
+    <Project Path="src/Apps/OpenTelemetry.Console.Tests/OpenTelemetry.Console.Tests.csproj" />
+    <Project Path="src/Apps/RabbitMQ.Console.Tests/RabbitMQ.Console.Tests.csproj" />
+    <Project Path="src/Apps/RabbitMQ.ConsumerDataflowService/RabbitMQ.ConsumerDataflowService.csproj" />
+    <Project Path="src/Apps/RabbitMQ.Dataflows.ServiceDefaults/RabbitMQ.Dataflows.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/src/tests/">
+    <Project Path="src/Tests/UnitTests/UnitTests.csproj" />
+  </Folder>
+</Solution>

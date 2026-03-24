@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
-    <ProjectReference Include="..\..\src\HouseofCat.RabbitMQ\HouseofCat.RabbitMQ.csproj" />
-    <ProjectReference Include="..\..\src\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.RabbitMQ\HouseofCat.RabbitMQ.csproj" />
+    <ProjectReference Include="..\..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
   </ItemGroup>
 
   <ItemGroup>

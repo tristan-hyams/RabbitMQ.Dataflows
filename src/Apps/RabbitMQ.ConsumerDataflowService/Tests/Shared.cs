@@ -58,9 +58,16 @@ public static class Shared
 
     public static async Task<IRabbitService> SetupRabbitServiceAsync(
         ILoggerFactory loggerFactory,
-        string configFileNamePath)
+        string configFileNamePath,
+        string connectionString = null)
     {
         var rabbitOptions = await RabbitOptionsExtensions.GetRabbitOptionsFromJsonFileAsync(configFileNamePath);
+
+        // Override URI with Aspire-injected connection string when available.
+        if (!string.IsNullOrWhiteSpace(connectionString))
+        {
+            rabbitOptions.PoolOptions.Uri = new Uri(connectionString);
+        }
         var hashProvider = new ArgonHashingProvider();
         var aes256Key = hashProvider.GetHashKey(EncryptionPassword, EncryptionSalt, KeySize);
 
