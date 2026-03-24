@@ -1,10 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\common.props" />
+<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.HighPerformance" Version="8.2.2" />
-    <PackageReference Include="K4os.Compression.LZ4.Streams" Version="1.3.8" />
+    <PackageReference Include="CommunityToolkit.HighPerformance" />
+    <PackageReference Include="K4os.Compression.LZ4.Streams" />
   </ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
-	</ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
+  </ItemGroup>
 </Project>

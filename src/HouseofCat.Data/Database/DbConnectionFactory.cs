@@ -32,9 +32,6 @@ public static class DbConnectionFactory
             Enums.Database.OracleSql =>
                 new Oracle.ManagedDataAccess.Client.OracleConnection(
                 GetConnectionString(connectionDetails)),
-            Enums.Database.LegacySqlServer =>
-                new System.Data.SqlClient.SqlConnection(
-                    GetConnectionString(connectionDetails)),
             Enums.Database.SQLite =>
                 new System.Data.SQLite.SQLiteConnection(
                     GetConnectionString(connectionDetails)),
@@ -63,9 +60,6 @@ public static class DbConnectionFactory
             Enums.Database.OracleSql =>
                 new Oracle.ManagedDataAccess.Client.OracleConnection(
                 GetConnectionString(connectionDetails)),
-            Enums.Database.LegacySqlServer =>
-                new System.Data.SqlClient.SqlConnection(
-                    GetConnectionString(connectionDetails)),
             Enums.Database.OleDb =>
                 new System.Data.OleDb.OleDbConnection(
                     GetConnectionString(connectionDetails)),
@@ -95,9 +89,6 @@ public static class DbConnectionFactory
                 break;
             case Enums.Database.OracleSql:
                 csb = GetOracleConnectionStringBuilder(details);
-                break;
-            case Enums.Database.LegacySqlServer:
-                csb = GetLegacySqlServerConnectionStringBuilder(details);
                 break;
             case Enums.Database.OleDb:
                 if (!OperatingSystem.IsWindows()) throw new InvalidOperationException("OleDb is only supported on Windows.");
@@ -186,60 +177,6 @@ public static class DbConnectionFactory
             { csb["Database"] = details.DatabaseName; }
 
             foreach (var keyValuePair in details.Metadata.OdbcOptions.Properties)
-            {
-                csb[keyValuePair.Key] = keyValuePair.Value;
-            }
-        }
-
-        return csb;
-    }
-
-    // ConnectionString - System.Data.SqlClient
-    // https://www.connectionstrings.com/microsoft-data-sqlclient/
-    public static System.Data.SqlClient.SqlConnectionStringBuilder GetLegacySqlServerConnectionStringBuilder(
-        ConnectionDetails details)
-    {
-        var csb = new System.Data.SqlClient.SqlConnectionStringBuilder
-        {
-            InitialCatalog = details.DatabaseName,
-            ApplicationIntent = System.Data.SqlClient.ApplicationIntent.ReadOnly,
-        };
-
-        if (!string.IsNullOrWhiteSpace(details.Username))
-        { csb.UserID = details.Username; }
-        else // If username is not provided, use built-in current Windows user Account.
-        { csb.IntegratedSecurity = true; }
-
-        if (!string.IsNullOrWhiteSpace(details.Password))
-        { csb.Password = details.Password; }
-
-        // Assumed if 0 (and below) it is the default 1433, therefore, not needed in string.
-        if (details.Port < 1)
-        { csb.DataSource = details.Host; }
-        else
-        { csb.DataSource = $"{details.Host},{details.Port}"; }
-
-        if (details.Metadata.SqlServerOptions is not null)
-        {
-            // These are all the same. Use built-in Window Authentication.
-            // Trusted_Connection=true
-            // IntegratedSecurity=true
-            // IntegratedSecurity=SSPI 
-            if (csb.IntegratedSecurity)
-            { csb.IntegratedSecurity = details.Metadata.SqlServerOptions.IntegratedSecurity; }
-
-            csb.MultipleActiveResultSets = details.Metadata.SqlServerOptions.MultipleActiveResultSets;
-            csb.MultiSubnetFailover = details.Metadata.SqlServerOptions.MultiSubnetFailover;
-            csb.Pooling = details.Metadata.SqlServerOptions.Pooling;
-            csb.MaxPoolSize = details.Metadata.SqlServerOptions.MaxPoolSize;
-            csb.MinPoolSize = details.Metadata.SqlServerOptions.MinPoolSize;
-
-            // Switches from NamedPipes to TCP/IP communication.
-            if (details.Metadata.SqlServerOptions.SwitchToTcp)
-            { csb["Network Library"] = "DBMSSOCN"; }
-
-            // Directly Transfer custom SqlServerOptions Properties to the SqlConnectionStringBuilder.
-            foreach (var keyValuePair in details.Metadata.SqlServerOptions.Properties)
             {
                 csb[keyValuePair.Key] = keyValuePair.Value;
             }

@@ -287,7 +287,9 @@ public static class OpenTelemetryHelpers
 
         if (ex is not null)
         {
+#pragma warning disable CS0618 // RecordException is obsolete — will be replaced during OTel refactor
             activity.RecordException(ex);
+#pragma warning restore CS0618
         }
 
         activity.SetStatus(ActivityStatusCode.Error, message);

@@ -1,113 +1,44 @@
 name: publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Manual Publish'
-        required: true
   push:
-    branches: [ 'publish' ]
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
 
 jobs:
-  build:
-
+  publish:
+    name: Build & Publish NuGet
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v4
+    - name: Extract version from tag
+      id: version
+      shell: bash
+      run: |
+        TAG="${GITHUB_REF#refs/tags/v}"
+        echo "version=$TAG" >> "$GITHUB_OUTPUT"
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
       with:
-        dotnet-version: '8.x.x'
+        dotnet-version: '10.0.x'
 
-    - name: Install dependencies
+    - name: Restore
       run: dotnet restore RabbitMQ.Dataflows.sln
 
     - name: Build
-      run: dotnet build RabbitMQ.Dataflows.sln --configuration Release --no-restore
-          
-    - name: Publish HouseofCat.Compression
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Compression/HouseofCat.Compression.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: true
+      run: dotnet build RabbitMQ.Dataflows.sln --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
 
-    - name: Publish HouseofCat.Data
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Data/HouseofCat.Data.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
+    - name: Pack
+      run: dotnet pack RabbitMQ.Dataflows.sln --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.version.outputs.version }}
 
-    - name: Publish HouseofCat.Dataflows
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Dataflows/HouseofCat.Dataflows.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
+    - name: Push to NuGet
+      run: dotnet nuget push "./nupkgs/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
 
-    - name: Publish HouseofCat.Encryption
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
       with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Encryption/HouseofCat.Encryption.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
-
-    - name: Publish HouseofCat.Hashing
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Hashing/HouseofCat.Hashing.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
-
-    - name: Publish HouseofCat.RabbitMQ
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.RabbitMQ/HouseofCat.RabbitMQ.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
-
-    - name: Publish HouseofCat.Serialization
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Serialization/HouseofCat.Serialization.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
-
-    - name: Publish HouseofCat.Utilities
-      uses: alirezanet/publish-nuget@v3.1.0
-      continue-on-error: true
-      with:
-          NUGET_KEY: ${{secrets.NUGET_API_KEY}}
-          VERSION_FILE_PATH: version.props
-          PROJECT_FILE_PATH: src/HouseofCat.Utilities/HouseofCat.Utilities.csproj
-          INCLUDE_SYMBOLS: true
-          TAG_COMMIT: false
+        generate_release_notes: true
+        files: ./nupkgs/*.nupkg

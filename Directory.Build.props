@@ -2,34 +2,35 @@
 	<Import Project="version.props" />
 	<PropertyGroup>
 		<!-- Shared Project Properties -->
-		<TargetFrameworks>net8.0</TargetFrameworks>
+		<TargetFramework>net10.0</TargetFramework>
 		<LangVersion>latest</LangVersion>
 		<NoWarn>1591</NoWarn>
+		<ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
 		<IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
 		<IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
 		<IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
-		
+
 		<!-- NuGet Attributes -->
 		<Authors>HouseofCat.io</Authors>
 		<Description>RabbitMQ.Dataflows library helps use RabbitMQ as well as create powerful RabbitMQ powered workflows.</Description>
-		<Copyright>Copyright © 2024</Copyright>
+		<Copyright>Copyright © 2026</Copyright>
 		<Product>HouseofCat.io - RabbitMQ.Dataflows</Product>
 		<PackageIcon>houseofcat.png</PackageIcon>
-		<PackageTags>C# NET8 NetCore RabbitMQ HouseofCat HouseofCat.io TPL Workflows Dataflow Pipelines</PackageTags>
+		<PackageTags>C# NET10 NetCore RabbitMQ HouseofCat HouseofCat.io TPL Workflows Dataflow Pipelines</PackageTags>
 		<PackageReleaseNotes>Major overhaul!</PackageReleaseNotes>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageProjectUrl>https://github.com/houseofcat/RabbitMQ.Dataflows</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/houseofcat/RabbitMQ.Dataflows</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		
+
 		<!-- Sourcelink-->
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<EmbedAllSources>true</EmbedAllSources>
 		<IncludeSymbols>true</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-		
+
 		<!-- Analyze -->
 		<RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
 		<RunAnalyzersDuringLiveAnalysis>true</RunAnalyzersDuringLiveAnalysis>
@@ -54,25 +55,29 @@
 		<IncludeSymbols>true</IncludeSymbols>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<None Include="..\..\houseofcat.png">
+	<ItemGroup Condition="'$(IsPackable)' != 'false'">
+		<None Include="$(MSBuildThisFileDirectory)houseofcat.png">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-		<None Include="..\..\LICENSE">
+		<None Include="$(MSBuildThisFileDirectory)LICENSE">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
-			<None Include="..\..\README.md">
+		<None Include="$(MSBuildThisFileDirectory)README.md">
 			<Pack>True</Pack>
 			<PackagePath></PackagePath>
 		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Update="Microsoft.SourceLink.GitHub" Version="8.0.0">
+		<PackageReference Include="Microsoft.SourceLink.GitHub">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
+
+	<!-- Auto-import test infrastructure for xUnit test projects -->
+	<Import Project="$(MSBuildThisFileDirectory)Test.Build.props"
+			Condition="'$(MSBuildProjectName)' == 'UnitTests'" />
 </Project>

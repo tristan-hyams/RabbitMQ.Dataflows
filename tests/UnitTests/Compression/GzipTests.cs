@@ -196,7 +196,7 @@ public class GzipTests
         // Anticipate the uncompressed length of GZip to get adequate sized buffers.
         Span<byte> uncompressedLength = stackalloc byte[4];
         stream.Position = stream.Length - 4;
-        stream.Read(uncompressedLength);
+        stream.ReadExactly(uncompressedLength);
         stream.Seek(0, SeekOrigin.Begin);
         return BitConverter.ToInt32(uncompressedLength);
     }

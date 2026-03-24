@@ -110,12 +110,12 @@ public sealed class AesStreamEncryptionProvider : IStreamEncryptionProvider
         aes.Padding = _paddingMode;
 
         var nonceSizeBytes = _pool.Rent(4);
-        stream.Read(nonceSizeBytes, 0, 4);
+        stream.ReadExactly(nonceSizeBytes, 0, 4);
 
         var nonceSize = BitConverter.ToInt32(nonceSizeBytes);
         var nonce = _pool.Rent(nonceSize);
 
-        stream.Read(nonce, 0, nonceSize);
+        stream.ReadExactly(nonce, 0, nonceSize);
 
         aes.IV = nonce
             .AsSpan()

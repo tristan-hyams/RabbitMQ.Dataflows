@@ -1,9 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\common.props" />
-	<ItemGroup>
-		<ProjectReference Include="..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
-		<ProjectReference Include="..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
-		<ProjectReference Include="..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
-		<ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
-	</ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
+    <ProjectReference Include="..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
+    <ProjectReference Include="..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
+    <ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
+  </ItemGroup>
 </Project>

@@ -1,18 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\common.props" />
-	<PropertyGroup>
-		<PackageTags>C# RabbitMQ Cooked Rabbit CookedRabbit NetCore HouseofCat</PackageTags>
-	</PropertyGroup>
-	<ItemGroup>
-    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
-		<PackageReference Include="RabbitMQ.Client.OAuth2" Version="1.0.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
-		<ProjectReference Include="..\HouseofCat.Dataflows\HouseofCat.Dataflows.csproj" />
-		<ProjectReference Include="..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
-		<ProjectReference Include="..\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
-		<ProjectReference Include="..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
-		<ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
-	</ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <PackageTags>C# RabbitMQ Cooked Rabbit CookedRabbit NetCore HouseofCat</PackageTags>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" />
+    <PackageReference Include="RabbitMQ.Client.OAuth2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
+    <ProjectReference Include="..\HouseofCat.Dataflows\HouseofCat.Dataflows.csproj" />
+    <ProjectReference Include="..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
+    <ProjectReference Include="..\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
+    <ProjectReference Include="..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
+    <ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
+  </ItemGroup>
 </Project>

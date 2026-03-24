@@ -36,30 +36,23 @@ public class ConnectionPool : IConnectionPool, IDisposable
     public RabbitOptions Options { get; }
     private readonly HttpClientHandler _oauth2ClientHandler;
 
-    public ConnectionPool(RabbitOptions options)
+    public ConnectionPool(RabbitOptions options) : this(options, null)
+    { }
+
+    public ConnectionPool(RabbitOptions options, HttpClientHandler oauth2ClientHandler)
     {
         Guard.AgainstNull(options, nameof(options));
         Options = options;
+        _oauth2ClientHandler = oauth2ClientHandler;
 
         _logger = LogHelpers.GetLogger<ConnectionPool>();
 
         _connections = Channel.CreateBounded<IConnectionHost>(Options.PoolOptions.Connections);
-        _connectionFactory = BuildConnectionFactory();
-
-        if (_oauth2ClientHandler is not null)
-        {
-            _connectionFactory = BuildConnectionFactory(options, _oauth2ClientHandler);
-        }
-        else
-        { _connectionFactory = BuildConnectionFactory(); }
+        _connectionFactory = _oauth2ClientHandler is not null
+            ? BuildConnectionFactory(options, _oauth2ClientHandler)
+            : BuildConnectionFactory();
 
         CreatePoolConnectionsAsync().GetAwaiter().GetResult();
-    }
-
-    public ConnectionPool(RabbitOptions options, HttpClientHandler oauth2ClientHandler) : this(options)
-    {
-        Guard.AgainstNull(oauth2ClientHandler, nameof(oauth2ClientHandler));
-        _oauth2ClientHandler = oauth2ClientHandler;
     }
 
     protected virtual ConnectionFactory BuildConnectionFactory()

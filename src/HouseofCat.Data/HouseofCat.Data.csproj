@@ -1,22 +1,26 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\..\common.props" />
-	<ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.35" />
-    <PackageReference Include="dotMorten.Microsoft.SqlServer.Types" Version="2.5.0" />
-    <PackageReference Include="Microsoft.Spatial" Version="7.21.1" />
-    <PackageReference Include="MySql.Data" Version="8.4.0" />
-    <PackageReference Include="Npgsql" Version="8.0.3" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.4.0" />
-    <PackageReference Include="SqlKata" Version="2.4.0" />
-    <PackageReference Include="System.Data.Odbc" Version="8.0.0" />
-    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
-		<ProjectReference Include="..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
-		<ProjectReference Include="..\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
-		<ProjectReference Include="..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
-		<ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
-	</ItemGroup>
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <PackageReference Include="Dapper" />
+    <PackageReference Include="dotMorten.Microsoft.SqlServer.Types" />
+    <PackageReference Include="Microsoft.Spatial" />
+    <PackageReference Include="MySql.Data" />
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" />
+    <PackageReference Include="SqlKata" />
+    <PackageReference Include="System.Data.Odbc" />
+    <PackageReference Include="System.Data.OleDb" />
+    <PackageReference Include="System.Data.SQLite" />
+    <!-- Transitive vulnerability overrides -->
+    <PackageReference Include="Azure.Identity" />
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+    <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HouseofCat.Compression\HouseofCat.Compression.csproj" />
+    <ProjectReference Include="..\HouseofCat.Encryption\HouseofCat.Encryption.csproj" />
+    <ProjectReference Include="..\HouseofCat.Hashing\HouseofCat.Hashing.csproj" />
+    <ProjectReference Include="..\HouseofCat.Serialization\HouseofCat.Serialization.csproj" />
+    <ProjectReference Include="..\HouseofCat.Utilities\HouseofCat.Utilities.csproj" />
+  </ItemGroup>
 </Project>
