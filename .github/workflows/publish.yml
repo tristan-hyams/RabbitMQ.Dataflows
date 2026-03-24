@@ -11,7 +11,6 @@ on:
         required: true
 
 env:
-  VERSION_PROP: /p:Version=${{ github.ref_name }}
   LIBRARY_PROJECTS: >-
     src/HouseofCat.Utilities/HouseofCat.Utilities.csproj
     src/HouseofCat.Hashing/HouseofCat.Hashing.csproj
@@ -57,14 +56,14 @@ jobs:
       shell: bash
       run: |
         for proj in ${{ env.LIBRARY_PROJECTS }}; do
-          dotnet build "$proj" --configuration Release --no-restore /p:Version=${{ steps.version.outputs.version }}
+          dotnet build "$proj" --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
         done
 
     - name: Pack
       shell: bash
       run: |
         for proj in ${{ env.LIBRARY_PROJECTS }}; do
-          dotnet pack "$proj" --configuration Release --no-build --output ./nupkgs /p:Version=${{ steps.version.outputs.version }}
+          dotnet pack "$proj" --configuration Release --no-build --output ./nupkgs -p:Version=${{ steps.version.outputs.version }}
         done
 
     - name: Push to NuGet

@@ -2,28 +2,33 @@
 
 ## Language & Framework
 
-- **Language:** C# (.NET 8.0)
+- **Language:** C# (.NET 10.0)
 - **Lang version:** `latest` (file-scoped namespaces, pattern matching, etc.)
-- **Solution:** `RabbitMQ.Dataflows.sln`
-- **Shared build props:** `common.props` (NuGet metadata, SourceLink, analyzers) + `version.props` (version `4.2.0`)
+- **Solution:** `RabbitMQ.Dataflows.slnx` (SLNX format)
+- **Build props:** `Directory.Build.props` (target framework, NuGet metadata, SourceLink, analyzers)
+- **Package versions:** `Directory.Packages.props` (central package management)
+- **Version:** `version.props` (default `5.0.0`, overridden by CI via `/p:Version`)
+- **Test infrastructure:** `Test.Build.props` (auto-imported for `*.Test`, `*.Tests`, `*.Testing` projects)
 
 ## Build & Run
 
 ```bash
 # Restore
-dotnet restore RabbitMQ.Dataflows.sln
+dotnet restore RabbitMQ.Dataflows.slnx
 
 # Build
-dotnet build RabbitMQ.Dataflows.sln --configuration Release
+dotnet build RabbitMQ.Dataflows.slnx --configuration Release
 
 # Unit tests (xUnit + Coverlet)
-dotnet test ./tests/UnitTests/UnitTests.csproj --configuration Release
+dotnet test src/Tests/UnitTests/UnitTests.csproj --configuration Release
 
-# Integration tests require a running RabbitMQ broker
-# Run console test projects manually:
-#   tests/RabbitMQ.Console.Tests
-#   tests/RabbitMQ.ConsumerDataflowService
-#   tests/OpenTelemetry.Console.Tests
+# Integration tests require a running RabbitMQ broker.
+# Use Aspire AppHost for local dev:
+dotnet run --project src/Apps/Aspire.AppHost/Aspire.AppHost.csproj
+# Or run console test projects manually:
+#   src/Apps/RabbitMQ.Console.Tests
+#   src/Apps/RabbitMQ.ConsumerDataflowService
+#   src/Apps/OpenTelemetry.Console.Tests
 ```
 
 ## Style & Formatting
@@ -80,6 +85,12 @@ Performance-critical compression and encryption providers have `Recyclable*` var
 ### Fluent Dataflow Builder
 `ConsumerDataflow<TState>` uses a fluent builder pattern: `WithBuildState()`, `WithDecryptionStep()`, `AddStep()`, `WithFinalization()`, etc.
 
+### Performance Conventions
+- `MethodImpl(MethodImplOptions.AggressiveInlining)` for performance-critical methods
+- `ConfigureAwait(false)` on all async calls
+- `ValueTask` return types for memory efficiency in hot paths
+- `ReadOnlySpan<byte>` for zero-allocation byte manipulation
+
 ## Error Handling
 
 - Dataflows (v2) catch exceptions in steps and set `IWorkState.IsFaulted` + `IWorkState.EDI` rather than letting them propagate.
@@ -95,8 +106,9 @@ Performance-critical compression and encryption providers have `Recyclable*` var
 
 ## Testing
 
-- **Unit tests:** xUnit (`tests/UnitTests/`), run in CI. Coverage via Coverlet (Cobertura format).
-- **Integration tests:** Console apps in `tests/` that require a live RabbitMQ broker. Not run in CI.
+- **Unit tests:** xUnit (`src/Tests/UnitTests/`), run in CI. Coverage via Coverlet (Cobertura format).
+- **Integration tests:** Console apps in `src/Apps/` that require a live RabbitMQ broker. Not run in CI.
+- **Local dev:** .NET Aspire AppHost provides RabbitMQ container with management UI.
 - **Code coverage:** Reported to Codacy via `codacy-coverage-reporter-action`.
 
 ## Security
@@ -108,25 +120,27 @@ Performance-critical compression and encryption providers have `Recyclable*` var
 
 ## CI/CD
 
-- **Build workflow:** `.github/workflows/build.yml` — triggers on push/PR to `main`, builds on `windows-latest`, .NET 8.x, runs unit tests, uploads coverage to Codacy.
-- **Publish workflow:** `.github/workflows/publish.yml` — manual dispatch or push to `publish` branch. Publishes all 8 NuGet packages via `alirezanet/publish-nuget@v3.1.0`. Version from `version.props`.
+- **Build workflow:** `.github/workflows/build.yml` — triggers on push/PR to `main`, builds on `windows-latest`, .NET 10.x, runs unit tests, uploads coverage to Codacy. Excludes `src/Apps/**` projects.
+- **Publish workflow:** `.github/workflows/publish.yml` — triggers on version tags (`v*.*.*`) or manual `workflow_dispatch`. Extracts version from tag (falls back to manual input). Builds, packs, and pushes all 8 library packages to NuGet.org. Creates a GitHub Release with generated notes.
 - **Code quality:** Codacy (`.codacy.yml` excludes `guides/`, `tests/`, `**.md`).
 
 ## Release Process
 
-1. Update version in `version.props`
-2. Push to `publish` branch or trigger publish workflow manually
-3. Each `src/` project is published as an independent NuGet package
-4. First package (`HouseofCat.Compression`) gets a git tag; others do not
+1. Tag the commit: `git tag v5.1.0 && git push origin v5.1.0`
+2. Publish workflow triggers automatically, extracts version from tag
+3. Each `src/HouseofCat.*` project is packed and pushed as an independent NuGet package
+4. GitHub Release created with auto-generated notes
+5. **Manual fallback:** Trigger `workflow_dispatch` from Actions tab with version input
 
 ## Key Config Files
 
 | File | Purpose |
 |------|---------|
 | `.editorconfig` | C# code style and naming rules |
-| `common.props` | Shared MSBuild properties (target framework, NuGet metadata, SourceLink) |
-| `version.props` | Centralized version (`4.2.0`) |
+| `Directory.Build.props` | Shared MSBuild properties (target framework, NuGet metadata, SourceLink) |
+| `Directory.Packages.props` | Centralized NuGet package versions |
+| `version.props` | Default version (`5.0.0`), overridden by CI tag |
+| `Test.Build.props` | Auto-imported test infrastructure for `*.Test(s\|ing)` projects |
 | `.codacy.yml` | Codacy analysis exclusions |
 | `.github/workflows/build.yml` | CI build + test + coverage |
-| `.github/workflows/publish.yml` | NuGet publish pipeline |
-| `.gitignore` | Standard .NET gitignore |
+| `.github/workflows/publish.yml` | NuGet publish pipeline (tag-triggered) |

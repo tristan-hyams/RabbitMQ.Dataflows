@@ -3,7 +3,8 @@
     "allow": [
       "Bash(dotnet build:*)",
       "mcp__plugin_context7_context7__query-docs",
-      "Bash(dotnet sln:*)"
+      "Bash(dotnet sln:*)",
+      "Bash(grep -E \"^./[^/]+/?$\")"
     ]
   }
 }

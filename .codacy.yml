@@ -1,5 +1,6 @@
 ---
 exclude_paths:
-  - 'guides/**'
-  - 'tests/**'
+  - './guides/**'
+  - './src/apps/**'
+  - './src/tests/**'
   - "**.md"

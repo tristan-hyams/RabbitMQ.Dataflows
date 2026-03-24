@@ -47,29 +47,34 @@ HouseofCat.Utilities  (no project deps)
 
 ```
 RabbitMQ.Dataflows/
-  common.props              # Shared MSBuild properties
-  version.props             # Centralized version
-  RabbitMQ.Dataflows.sln    # Solution file
+  Directory.Build.props         # Shared MSBuild properties (TFM, NuGet metadata, SourceLink)
+  Directory.Packages.props      # Centralized NuGet package versions
+  version.props                 # Default version (5.0.0), overridden by CI tag
+  Test.Build.props              # Auto-imported test infra for *.Test(s|ing) projects
+  RabbitMQ.Dataflows.slnx       # Solution file (SLNX format)
   src/
-    HouseofCat.Utilities/   # Extensions, helpers, logging, OpenTelemetry, RecyclableMemoryStream
-    HouseofCat.Hashing/     # IHashingProvider, ArgonHashingProvider
-    HouseofCat.Serialization/ # ISerializationProvider, JsonProvider, MessagePackProvider
-    HouseofCat.Compression/ # ICompressionProvider, Gzip/Brotli/Deflate/LZ4 + Recyclable variants
-    HouseofCat.Encryption/  # IEncryptionProvider, AesGcm/BouncyAesGcm + Recyclable variants
-    HouseofCat.Dataflows/   # IWorkState, BaseDataflow, Pipeline, DataflowEngine, ChannelBlock
-    HouseofCat.RabbitMQ/    # Pools, Publisher, Consumer, ConsumerDataflow, RabbitService, Topologer
-    HouseofCat.Data/        # DataTransformer, DbConnectionFactory, DapperHelper, QueryBuilding
-  tests/
-    UnitTests/              # xUnit unit tests (compression, encryption, hashing, serialization, transforms)
-    RabbitMQ.Console.Tests/ # Integration tests (require live RabbitMQ broker)
-    RabbitMQ.ConsumerDataflowService/ # ConsumerDataflow integration test
-    OpenTelemetry.Console.Tests/      # OpenTelemetry span propagation tests
+    HouseofCat.Utilities/       # Extensions, helpers, logging, OpenTelemetry, RecyclableMemoryStream
+    HouseofCat.Hashing/         # IHashingProvider, ArgonHashingProvider
+    HouseofCat.Serialization/   # ISerializationProvider, JsonProvider, MessagePackProvider
+    HouseofCat.Compression/     # ICompressionProvider, Gzip/Brotli/Deflate/LZ4 + Recyclable variants
+    HouseofCat.Encryption/      # IEncryptionProvider, AesGcm/BouncyAesGcm + Recyclable variants
+    HouseofCat.Dataflows/       # IWorkState, BaseDataflow, Pipeline, DataflowEngine, ChannelBlock
+    HouseofCat.RabbitMQ/        # Pools, Publisher, Consumer, ConsumerDataflow, RabbitService, Topologer
+    HouseofCat.Data/            # DataTransformer, DbConnectionFactory, DapperHelper, QueryBuilding
+    Apps/
+      Aspire.AppHost/                       # .NET Aspire orchestrator (RabbitMQ container + management UI)
+      RabbitMQ.Dataflows.ServiceDefaults/   # Aspire service defaults (OTel, health checks, resilience)
+      RabbitMQ.Console.Tests/               # RabbitMQ integration tests (require live broker)
+      RabbitMQ.ConsumerDataflowService/     # ConsumerDataflow integration test
+      OpenTelemetry.Console.Tests/          # OpenTelemetry span propagation tests
+    Tests/
+      UnitTests/                # xUnit unit tests (compression, encryption, hashing, serialization, transforms)
   guides/
-    rabbitmq/               # Step-by-step guides: ConnectionPools, ChannelPools, Publisher, Consumer, ConsumerDataflow, etc.
-    csharp/                 # C# language guides (compression, parallelism, etc.)
-    golang/                 # Go dependency patching guide
-    ml/                     # ML/AI guides (Stable Diffusion)
-  docs/                     # Agent context docs (this file)
+    rabbitmq/                   # Step-by-step guides: ConnectionPools, ChannelPools, Publisher, Consumer, etc.
+    csharp/                     # C# language guides (compression, parallelism, etc.)
+    golang/                     # Go dependency patching guide
+    ml/                         # ML/AI guides (Stable Diffusion)
+  docs/                         # Agent context docs (this file)
 ```
 
 ## Integration Points
@@ -89,3 +94,4 @@ RabbitMQ.Dataflows/
 | Data transformation | `HouseofCat.Data` | `DataTransformer`, `RecyclableTransformer` |
 | OpenTelemetry | `HouseofCat.Utilities` | `OpenTelemetryHelpers` |
 | Logging | `HouseofCat.Utilities` | `LogHelpers` |
+| Local dev environment | `Aspire.AppHost` | RabbitMQ container with management UI |
